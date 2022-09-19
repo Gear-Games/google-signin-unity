@@ -12,9 +12,12 @@ local.settings
 *.sln
 *.userprefs
 Library/
+Logs/
 ProjectSettings/
+UserSettings/
 Temp/
 obj/
+.vs/
 
 # Don't check in the resolver
 GoogleSignInPlugin/Assets/PlayServicesResolver/
