@@ -149,12 +149,24 @@ The steps are:
 
 
 ## Building the Plugin
-To build the plugin run `./gradlew -PlintAbortOnError build_all`. This builds the support aar
+To build the plugin run `gradlew -PlintAbortOnError build_all`. This builds the support aar
 library with lint warnings as errors and packages the plugin into a .unitypackage file.  It
 also packages the sample scene and script in a separate package.
 
 There's also a shortcut for linux/mac: `./build_all`.
 
+## Missing SDKs fixes
+To fix missing SDKs error, you can create a file named `local.properties` and put content to set path to SDKs, and Unity editor like this:
+```
+sdk.dir=C\:\\Android\\SDK
+ndk.dir=C\:\\Android\\SDK\\ndk\\21.3.6528147
+UNITY_EXE=D\:\\Unity\\2020.3.26f1\\Editor\\Unity.exe
+```
+
+You can set `JAVA_HOME` by create a file named `gradle.properties` and put content to set it
+```
+org.gradle.java.home=C\:\\Android\\Android Studio\\jre
+```
 
 ## Questions? Problems?
 Post questions to this [Github project](https://github.com/googlesamples/google-signin-unity).
