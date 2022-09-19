@@ -12,6 +12,7 @@ local.settings
 
 *.sln
 *.userprefs
+*.unitypackage
 Library/
 Logs/
 ProjectSettings/
