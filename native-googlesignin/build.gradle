@@ -12,8 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-apply plugin: 'com.android.library'
-apply plugin: 'maven'
+plugins {
+    id 'com.android.library'
+    id 'maven'
+}
 
 group "com.google.signin"
 
@@ -74,7 +76,7 @@ android {
 // artifact, the second is a task to rename the aar -> srcaar.
 
 artifacts {
-    archives file("build/${baseName}-${version}.srcaar")
+  archives file("build/${baseName}-${version}.srcaar")
 }
 
 task renameLibrary() {
@@ -90,9 +92,9 @@ task renameLibrary() {
   }
 
   doLast {
-    configurations.archives.with   {
-         artifacts.remove artifacts.find { it.extension == "aar"}
-      }
+    configurations.archives.with {
+      artifacts.remove artifacts.find { it.extension == "aar"}
+    }
   }
 }
 
@@ -112,5 +114,6 @@ uploadArchives {
 }
 
 dependencies {
-        api "com.google.android.gms:play-services-auth:16.0.0"
+  api "com.google.android.gms:play-services-auth:20+"
+  api "androidx.annotation:annotation:1.4+"
 }

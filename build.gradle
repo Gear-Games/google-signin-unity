@@ -23,7 +23,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.4'
+        classpath 'com.android.tools.build:gradle:3.5.0'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -38,6 +38,10 @@ allprojects {
 }
 
 project.ext {
+    // Read properties from file
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
     // Determine the current OS.
     os_name = System.getProperty("os.name").toLowerCase();
     os_osx = os_name.contains("mac os x");
@@ -47,6 +51,9 @@ project.ext {
     unity_exe = System.getProperty("UNITY_EXE")
     if (unity_exe == null || unity_exe.isEmpty()) {
         unity_exe = System.getenv("UNITY_EXE")
+    }
+    if (unity_exe == null || unity_exe.isEmpty()) {
+        unity_exe = properties.getProperty("UNITY_EXE")
     }
     if (unity_exe == null || unity_exe.isEmpty()) {
         if (os_osx) {
@@ -68,7 +75,7 @@ project.ext {
         git_exe = 'git'
     }
 
-    pluginVersion = "1.0.4"
+    pluginVersion = "1.0.5"
     currentPluginBasename = 'google-signin-plugin'
     currentPluginName = (currentPluginBasename + '-' + pluginVersion +
                                      '.unitypackage')
@@ -126,10 +133,11 @@ task copy_jarresolver() {
         // Else, check each one of the repo addresses and stop when successful.
         for (repo in jarresolver_repos) {
             def result = exec {
-                    executable "${git_exe}"
-                        args "clone", repo, "${resolverDir}"
-                        ignoreExitValue true
-                    }
+                executable "${git_exe}"
+                    args "clone", repo, "${resolverDir}"
+                    ignoreExitValue true
+            }
+            
             if (result.exitValue == 0 && jarresolver_tag != null) {
                 result = exec {
                     executable "${git_exe}"
@@ -152,7 +160,7 @@ task import_jarresolver() {
 
     doLast {
         def tree = fileTree(resolverDir) {
-            include "*.unitypackage"
+            include "*-latest.unitypackage"
         }
         def jarresolver_package = tree.getSingleFile()
         def argv = [
@@ -242,7 +250,7 @@ task package_plugin () {
 
     doLast {
         def tree = fileTree(resolverDir) {
-            include "*.unitypackage"
+            include "*-latest.unitypackage"
         }
         def jarresolver_package = tree.getSingleFile()
         def argv = [
@@ -257,7 +265,6 @@ task package_plugin () {
                 "-importPackage", jarresolver_package,
                 "-exportPackage",
                     "Assets/GoogleSignIn",
-                    "Assets/Parse",
                     "Assets/PlayServicesResolver",
                     "Assets/Plugins",
                 "${exportPath}",
@@ -372,6 +379,6 @@ def versionedAssetName(filename, version) {
  *  - Build the Google Sign-In Sample package (requires Unity).
  */
 task build_all() {
-        dependsOn ':native-googlesignin:uploadArchives', copy_jarresolver, package_plugin, package_sample
+    dependsOn ':native-googlesignin:uploadArchives', copy_jarresolver, package_plugin, package_sample
 }
 
